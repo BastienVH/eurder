@@ -1,6 +1,7 @@
 package com.bastienvh.eurder.service;
 
 import com.bastienvh.eurder.domain.CreateCustomerDTO;
+import com.bastienvh.eurder.domain.Customer;
 import com.bastienvh.eurder.domain.CustomerDTO;
 import com.bastienvh.eurder.domain.CustomerMapper;
 import com.bastienvh.eurder.repository.CustomerRepository;
@@ -19,13 +20,19 @@ public class CustomerService {
         this.mapper = mapper;
     }
 
-    public UUID createCustomer(CreateCustomerDTO createCustomerDTO) {
-        return repository.createCustomer(mapper.createDTOToCustomer(createCustomerDTO));
+    public CustomerDTO createCustomer(CreateCustomerDTO createCustomerDTO) {
+        Customer customer = mapper.createDTOToCustomer(createCustomerDTO);
+        repository.createCustomer(customer);
+        return mapper.customerToDTO(customer);
     }
 
     public List<CustomerDTO> getAllCustomers() {
         return repository.getAllCustomers().stream()
                 .map(customer -> mapper.customerToDTO(customer))
                 .toList();
+    }
+
+    public CustomerDTO getCustomerById(UUID id) {
+        return mapper.customerToDTO(repository.getCustomerById(id));
     }
 }

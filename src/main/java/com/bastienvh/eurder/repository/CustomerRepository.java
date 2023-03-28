@@ -1,6 +1,7 @@
 package com.bastienvh.eurder.repository;
 
 import com.bastienvh.eurder.domain.Customer;
+import com.bastienvh.eurder.exceptions.InvalidCustomerException;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
@@ -14,12 +15,19 @@ public class CustomerRepository {
         customers = new ConcurrentHashMap<>();
     }
 
-    public UUID createCustomer(Customer customer) {
+    public void createCustomer(Customer customer) {
         customers.put(customer.getId(), customer);
-        return customer.getId();
     }
 
     public Collection<Customer> getAllCustomers() {
         return customers.values();
+    }
+
+    public Customer getCustomerById(UUID id) {
+        if (customers.containsKey(id)) {
+            return customers.get(id);
+        } else {
+            throw new InvalidCustomerException("No user found with id: " + id);
+        }
     }
 }

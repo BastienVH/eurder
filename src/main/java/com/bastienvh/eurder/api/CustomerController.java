@@ -20,7 +20,7 @@ public class CustomerController {
 
     @PostMapping(consumes = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
-    public UUID createCustomer(@RequestBody CreateCustomerDTO createCustomerDTO) {
+    public CustomerDTO createCustomer(@RequestBody CreateCustomerDTO createCustomerDTO) {
         return service.createCustomer(createCustomerDTO);
     }
 
@@ -28,5 +28,11 @@ public class CustomerController {
     @ResponseStatus(HttpStatus.OK)
     public List<CustomerDTO> getAllCustomers() {
         return service.getAllCustomers();
+    }
+
+    @GetMapping(path = "/{id}", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public CustomerDTO getCustomerById(@PathVariable UUID id) {
+        return service.getCustomerById(id);
     }
 }
