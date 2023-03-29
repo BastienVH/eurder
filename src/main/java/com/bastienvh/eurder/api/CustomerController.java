@@ -1,7 +1,7 @@
 package com.bastienvh.eurder.api;
 
-import com.bastienvh.eurder.domain.CreateCustomerDTO;
-import com.bastienvh.eurder.domain.CustomerDTO;
+import com.bastienvh.eurder.domain.customer.CreateCustomerDTO;
+import com.bastienvh.eurder.domain.customer.CustomerDTO;
 import com.bastienvh.eurder.service.CustomerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;

@@ -1,8 +1,8 @@
 package com.bastienvh.eurder.integrationtests;
 
-import com.bastienvh.eurder.domain.Address;
-import com.bastienvh.eurder.domain.CreateCustomerDTO;
-import com.bastienvh.eurder.domain.CustomerDTO;
+import com.bastienvh.eurder.domain.customer.Address;
+import com.bastienvh.eurder.domain.customer.CreateCustomerDTO;
+import com.bastienvh.eurder.domain.customer.CustomerDTO;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.assertj.core.api.Assertions;

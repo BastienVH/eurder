@@ -1,4 +1,4 @@
-package com.bastienvh.eurder.domain;
+package com.bastienvh.eurder.domain.customer;
 
 import java.util.UUID;
 

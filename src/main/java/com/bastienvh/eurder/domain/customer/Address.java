@@ -1,4 +1,4 @@
-package com.bastienvh.eurder.domain;
+package com.bastienvh.eurder.domain.customer;
 
 import org.apache.commons.lang3.Validate;
 

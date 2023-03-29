@@ -1,7 +1,8 @@
-package com.bastienvh.eurder.api;
+package com.bastienvh.eurder.unittests;
 
-import com.bastienvh.eurder.domain.Address;
-import com.bastienvh.eurder.domain.CustomerDTO;
+import com.bastienvh.eurder.api.CustomerController;
+import com.bastienvh.eurder.domain.customer.Address;
+import com.bastienvh.eurder.domain.customer.CustomerDTO;
 import com.bastienvh.eurder.service.CustomerService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;

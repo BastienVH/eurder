@@ -1,9 +1,9 @@
 package com.bastienvh.eurder.service;
 
-import com.bastienvh.eurder.domain.CreateCustomerDTO;
-import com.bastienvh.eurder.domain.Customer;
-import com.bastienvh.eurder.domain.CustomerDTO;
-import com.bastienvh.eurder.domain.CustomerMapper;
+import com.bastienvh.eurder.domain.customer.CreateCustomerDTO;
+import com.bastienvh.eurder.domain.customer.Customer;
+import com.bastienvh.eurder.domain.customer.CustomerDTO;
+import com.bastienvh.eurder.domain.customer.CustomerMapper;
 import com.bastienvh.eurder.repository.CustomerRepository;
 import org.springframework.stereotype.Service;
 

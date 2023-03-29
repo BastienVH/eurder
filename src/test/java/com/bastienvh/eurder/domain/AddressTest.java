@@ -1,6 +1,7 @@
 package com.bastienvh.eurder.domain;
 
 
+import com.bastienvh.eurder.domain.customer.Address;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 

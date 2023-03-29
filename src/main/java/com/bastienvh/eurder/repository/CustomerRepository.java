@@ -1,12 +1,13 @@
 package com.bastienvh.eurder.repository;
 
-import com.bastienvh.eurder.domain.Customer;
+import com.bastienvh.eurder.domain.customer.Customer;
 import com.bastienvh.eurder.exceptions.InvalidCustomerException;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+
 @Repository
 public class CustomerRepository {
     ConcurrentHashMap<UUID, Customer> customers;
