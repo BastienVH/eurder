@@ -1,7 +1,6 @@
 package com.bastienvh.eurder.repository;
 
 import com.bastienvh.eurder.domain.item.Item;
-import com.bastienvh.eurder.domain.item.ItemDTO;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
