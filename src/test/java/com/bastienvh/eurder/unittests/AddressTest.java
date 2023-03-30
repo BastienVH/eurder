@@ -1,4 +1,4 @@
-package com.bastienvh.eurder.domain;
+package com.bastienvh.eurder.unittests;
 
 
 import com.bastienvh.eurder.domain.customer.Address;

@@ -26,6 +26,7 @@ public class CustomerService {
         return mapper.customerToDTO(customer);
     }
 
+
     public List<CustomerDTO> getAllCustomers() {
         return repository.getAllCustomers().stream()
                 .map(customer -> mapper.customerToDTO(customer))

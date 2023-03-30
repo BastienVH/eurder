@@ -3,12 +3,14 @@ package com.bastienvh.eurder.integrationtests;
 import com.bastienvh.eurder.domain.customer.Address;
 import com.bastienvh.eurder.domain.customer.CreateCustomerDTO;
 import com.bastienvh.eurder.domain.customer.CustomerDTO;
+import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.http.HttpStatus;
 
 import java.util.UUID;
 
@@ -19,6 +21,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 public class CustomerIntegrationTest {
     @LocalServerPort int port;
 
+    Address ADDRESS = new Address("Kantersteen", "8A", "Brussels", 1000);
     @Test
     void getOneCustomer_withWrongUUID_thenThrowException() {
         //GIVEN
@@ -59,6 +62,4 @@ public class CustomerIntegrationTest {
                 .as(CustomerDTO.class);
         Assertions.assertThat(DTOFromGet).isEqualTo(DTOfromCreation);
     }
-
-
 }

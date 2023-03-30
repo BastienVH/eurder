@@ -1,5 +1,6 @@
 package com.bastienvh.eurder.domain.item;
 
+import com.bastienvh.eurder.domain.Price;
 import org.apache.commons.lang3.Validate;
 
 import java.util.Objects;

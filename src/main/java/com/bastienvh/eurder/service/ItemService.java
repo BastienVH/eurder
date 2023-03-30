@@ -1,9 +1,7 @@
 package com.bastienvh.eurder.service;
 
-import com.bastienvh.eurder.domain.item.CreateItemDTO;
-import com.bastienvh.eurder.domain.item.Item;
-import com.bastienvh.eurder.domain.item.ItemDTO;
-import com.bastienvh.eurder.domain.item.ItemMapper;
+import com.bastienvh.eurder.domain.Price;
+import com.bastienvh.eurder.domain.item.*;
 import com.bastienvh.eurder.repository.ItemRepository;
 import org.springframework.stereotype.Service;
 
@@ -30,5 +28,18 @@ public class ItemService {
                 .stream()
                 .map(mapper::itemToDTO)
                 .toList();
+    }
+
+    public int getAmountInStockByItemId(int id) {
+        return repository.getAmountInStockById(id);
+    }
+
+    public Price getCurrentPriceByItemId(int id) {
+        Price currentPrice = repository.getPriceById(id);
+        return new Price(currentPrice.value(), currentPrice.currency());
+    }
+
+    public void removeAmountOfStockById(int itemId, int amount) {
+        repository.removeAmountOfStockById(itemId, amount);
     }
 }

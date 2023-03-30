@@ -1,5 +1,7 @@
 package com.bastienvh.eurder.domain.item;
 
+import com.bastienvh.eurder.domain.Price;
+
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Item {
@@ -36,5 +38,9 @@ public class Item {
 
     public int getAmountInStock() {
         return amountInStock;
+    }
+
+    public void setAmountInStock(int amountInStock) {
+        this.amountInStock = amountInStock;
     }
 }
