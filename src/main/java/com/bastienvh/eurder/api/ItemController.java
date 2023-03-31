@@ -3,6 +3,7 @@ package com.bastienvh.eurder.api;
 import com.bastienvh.eurder.domain.item.CreateItemDTO;
 import com.bastienvh.eurder.domain.item.ItemDTO;
 import com.bastienvh.eurder.service.ItemService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +26,7 @@ public class ItemController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public int addItem(@RequestBody CreateItemDTO createItemDTO) {
+    public int addItem(@Valid @RequestBody CreateItemDTO createItemDTO) {
         return service.addItem(createItemDTO);
     }
 }

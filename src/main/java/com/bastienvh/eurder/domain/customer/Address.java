@@ -1,15 +1,12 @@
 package com.bastienvh.eurder.domain.customer;
 
-import org.apache.commons.lang3.Validate;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 
-import java.util.Objects;
-
-public record Address (String street, String number, String city, int postalCode) {
-    public Address {
-        Objects.requireNonNull(street, "street can't be null");
-        Objects.requireNonNull(number, "number can't be null");
-        Objects.requireNonNull(city, "city can't be null");
-        Validate.exclusiveBetween(999, 10000, postalCode, "postal code is not valid");
-    }
-
+public record Address(@NotBlank(message = "street name not provided") String street,
+                      @NotBlank(message = "number not provided") String number,
+                      @NotBlank(message = "city name not provided") String city,
+                      @Min(value = 1000, message = "postal code not provided or below minimum threshold (1000)")
+                      @Max(value = 9999, message = "postal code is above maximum threshold (9999)") int postalCode) {
 }

@@ -19,19 +19,21 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 public class CustomerIntegrationTest {
-    @LocalServerPort int port;
+    @LocalServerPort
+    int port;
 
-    Address ADDRESS = new Address("Kantersteen", "8A", "Brussels", 1000);
+
     @Test
     void getOneCustomer_withWrongUUID_thenThrowException() {
         //GIVEN
-         Response response = given()
-                 .baseUri("http://localhost")
-                 .port(port)
-                 .get("/customers/" + UUID.randomUUID());
+        Response response = given()
+                .baseUri("http://localhost")
+                .port(port)
+                .get("/customers/" + UUID.randomUUID());
 
         Assertions.assertThat(response.asString()).contains("No user found");
     }
+
     @Test
     void getOneCustomer_withCorrectUUID_thenReturnsCorrectCustomerDTO() {
         //GIVEN
@@ -61,5 +63,117 @@ public class CustomerIntegrationTest {
                 .extract()
                 .as(CustomerDTO.class);
         Assertions.assertThat(DTOFromGet).isEqualTo(DTOfromCreation);
+    }
+
+    @Test
+    void createCustomer_withIncompleteFields_returnsExceptionMessage() {
+        //GIVEN
+        CreateCustomerDTO createCustomerDTOWithoutFirstName = new CreateCustomerDTO(
+                null,
+                "lastName",
+                "first.last@example.com",
+                new Address("street", "number", "city", 1000),
+                "phone number");
+
+        //WHEN
+        String[] response = RestAssured
+                .given()
+                .port(port)
+                .contentType(ContentType.JSON)
+                .body(createCustomerDTOWithoutFirstName)
+                .when()
+                .post("/customers")
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.UNPROCESSABLE_ENTITY.value())
+                .extract()
+                .as(String[].class);
+
+        //THEN
+        Assertions.assertThat(response[0]).isEqualTo("first name is mandatory");
+    }
+
+    @Test
+    void createCustomer_withInvalidAddress_returnsExceptionMessage() {
+        //GIVEN
+        CreateCustomerDTO createCustomerDTOWithoutFirstName = new CreateCustomerDTO(
+                "firstName",
+                "lastName",
+                "first.last@example.com",
+                new Address(null, "number", "city", 1000),
+                "phone number");
+
+        //WHEN
+        String[] response = RestAssured
+                .given()
+                .port(port)
+                .contentType(ContentType.JSON)
+                .body(createCustomerDTOWithoutFirstName)
+                .when()
+                .post("/customers")
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.UNPROCESSABLE_ENTITY.value())
+                .extract()
+                .as(String[].class);
+
+        //THEN
+        Assertions.assertThat(response[0]).isEqualTo("street name not provided");
+    }
+
+    @Test
+    void createCustomer_withoutPostalCode_returnsExceptionMessage() {
+        //GIVEN
+        CreateCustomerDTO createCustomerDTOWithoutFirstName = new CreateCustomerDTO(
+                "firstName",
+                "lastName",
+                "first.last@example.com",
+                new Address("Kantersteen", "number", "city", 0),
+                "phone number");
+
+        //WHEN
+        String[] response = RestAssured
+                .given()
+                .port(port)
+                .contentType(ContentType.JSON)
+                .body(createCustomerDTOWithoutFirstName)
+                .when()
+                .post("/customers")
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.UNPROCESSABLE_ENTITY.value())
+                .extract()
+                .as(String[].class);
+
+        //THEN
+        Assertions.assertThat(response[0]).isEqualTo("postal code not provided or below minimum threshold (1000)");
+    }
+
+    @Test
+    void createCustomer_withInvalidPostalCode_returnsExceptionMessage() {
+        //GIVEN
+        CreateCustomerDTO createCustomerDTOWithoutFirstName = new CreateCustomerDTO(
+                "firstName",
+                "lastName",
+                "first.last@example.com",
+                new Address("Kantersteen", "number", "city", 10200),
+                "phone number");
+
+        //WHEN
+        String[] response = RestAssured
+                .given()
+                .port(port)
+                .contentType(ContentType.JSON)
+                .body(createCustomerDTOWithoutFirstName)
+                .when()
+                .post("/customers")
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.UNPROCESSABLE_ENTITY.value())
+                .extract()
+                .as(String[].class);
+
+        //THEN
+        Assertions.assertThat(response[0]).isEqualTo("postal code is above maximum threshold (9999)");
     }
 }

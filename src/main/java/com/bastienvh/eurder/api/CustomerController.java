@@ -3,6 +3,7 @@ package com.bastienvh.eurder.api;
 import com.bastienvh.eurder.domain.customer.CreateCustomerDTO;
 import com.bastienvh.eurder.domain.customer.CustomerDTO;
 import com.bastienvh.eurder.service.CustomerService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +21,7 @@ public class CustomerController {
 
     @PostMapping(consumes = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
-    public CustomerDTO createCustomer(@RequestBody CreateCustomerDTO createCustomerDTO) {
+    public CustomerDTO createCustomer(@Valid @RequestBody CreateCustomerDTO createCustomerDTO) {
         return service.createCustomer(createCustomerDTO);
     }
 
