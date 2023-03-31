@@ -47,8 +47,28 @@ public class ItemIntegrationTest {
         Assertions.assertThat(itemRepository.getAllItems().size()).isEqualTo(1);
     }
 
+    @Test
+    void createItem_withInvalidPrice_thenHttpStatusIs422AndIdExceptionMessageIsReturned() {
+        //GIVEN
+        CreateItemDTO validItem = new CreateItemDTO("Twix bar", "A delicious candy bar", new Price(BigDecimal.valueOf(0), Currency.EURO), 42);
+        //WHEN
+        String[] response = RestAssured
+                .given()
+                .port(port)
+                .contentType(ContentType.JSON)
+                .body(validItem)
+                .when()
+                .post("/items")
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.UNPROCESSABLE_ENTITY.value())
+                .extract()
+                .as(String[].class);
 
-    //test making a new item with invalid price
+        //THEN
+        Assertions.assertThat(response[0]).isEqualTo("Price can't be negative");
+    }
+
 
     //test making a new item with invalid stock amount
 
