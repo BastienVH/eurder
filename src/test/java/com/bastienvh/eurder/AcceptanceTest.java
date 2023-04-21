@@ -1,6 +1,5 @@
 package com.bastienvh.eurder;
 
-import com.bastienvh.eurder.domain.item.Item;
 import com.bastienvh.eurder.domain.order.CreateOrderDTO;
 import com.bastienvh.eurder.domain.order.ItemGroup;
 import com.bastienvh.eurder.domain.order.OrderItem;
@@ -11,13 +10,15 @@ import com.bastienvh.eurder.domain.customer.CustomerDTO;
 import com.bastienvh.eurder.domain.item.Currency;
 import com.bastienvh.eurder.domain.item.ItemDTO;
 import com.bastienvh.eurder.repository.ItemRepository;
+import com.bastienvh.eurder.repository.OrderItemRepository;
 import com.bastienvh.eurder.repository.OrderRepository;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
@@ -29,6 +30,8 @@ import java.util.List;
 
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@EnableAutoConfiguration
+@AutoConfigureTestDatabase
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class AcceptanceTest {
     @LocalServerPort
@@ -38,6 +41,8 @@ public class AcceptanceTest {
     private OrderRepository orderRepository;
     @Autowired
     private ItemRepository itemRepository;
+    @Autowired
+    private OrderItemRepository orderItemRepository;
 
     @Test
     void whenAnOrderIsPlaced_thenOrderedAmountIsRemovedFromStock() {
@@ -60,7 +65,7 @@ public class AcceptanceTest {
                 .statusCode(HttpStatus.CREATED.value());
 
         //THEN
-        Assertions.assertThat(itemRepository.getAmountInStockById(itemId)).isEqualTo(8);
+        Assertions.assertThat(itemRepository.findById(itemId).get().getAmountOfStock()).isEqualTo(8);
     }
 
     @Test
@@ -90,19 +95,19 @@ public class AcceptanceTest {
                 .statusCode(HttpStatus.CREATED.value());
 
         //THEN
-        Assertions.assertThat(itemRepository.getAmountInStockById(itemId1)).isEqualTo(8);
-        Assertions.assertThat(itemRepository.getAmountInStockById(itemId2)).isEqualTo(3);
-        Assertions.assertThat(itemRepository.getAmountInStockById(itemId3)).isEqualTo(1);
+        Assertions.assertThat(itemRepository.findById(itemId1).get().getAmountOfStock()).isEqualTo(8);
+        Assertions.assertThat(itemRepository.findById(itemId2).get().getAmountOfStock()).isEqualTo(3);
+        Assertions.assertThat(itemRepository.findById(itemId3).get().getAmountOfStock()).isEqualTo(1);
     }
 
     @Test
     void getCorrectDeliveryDate_whenItemIsInStock_thenDeliveryDateIsTomorrow() {
         //GIVEN
         CustomerDTO customerDTO = createNewCustomer();
-        ItemDTO itemDTO = new ItemDTO(0, "something", "something", new Price(BigDecimal.valueOf(5), Currency.EURO), 10);
+        ItemDTO itemDTO = new ItemDTO(1, "something", "something", new Price(BigDecimal.valueOf(5), Currency.EURO), 10);
         addItemToRepo(itemDTO);
         CreateOrderDTO createOrderDTO = new CreateOrderDTO(customerDTO.id(), List.of(
-                new ItemGroup(0, 2)));
+                new ItemGroup(1, 2)));
         //WHEN
         RestAssured
                 .given()
@@ -115,17 +120,17 @@ public class AcceptanceTest {
                 .assertThat()
                 .statusCode(HttpStatus.CREATED.value());
 
-        OrderItem orderedItem = orderRepository.getOrderById(0).getOrderItemList().get(0);
+        OrderItem orderedItem = orderItemRepository.findOrderItemByOrderId(1);
 
         //THEN
-        Assertions.assertThat(orderedItem.deliveryDate()).isEqualTo(LocalDate.now().plusDays(1));
+        Assertions.assertThat(orderedItem.getDeliveryDate()).isEqualTo(LocalDate.now().plusDays(1));
     }
 
     @Test
     void getCorrectDeliveryDate_whenItemIsNotInStock_thenDeliveryDateIsNextWeek() {
         CustomerDTO customerDTO = createNewCustomer();
         //GIVEN
-        ItemDTO itemDTO = new ItemDTO(0, "something", "something", new Price(BigDecimal.valueOf(5), Currency.EURO), 10);
+        ItemDTO itemDTO = new ItemDTO(1, "something", "something", new Price(BigDecimal.valueOf(5), Currency.EURO), 10);
         int itemId = addItemToRepo(itemDTO);
         CreateOrderDTO createOrderDTO = new CreateOrderDTO(customerDTO.id(), List.of(
                 new ItemGroup(itemId, 12)));
@@ -144,10 +149,10 @@ public class AcceptanceTest {
                 .jsonPath()
                 .getInt("orderId");
 
-        OrderItem orderedItem = orderRepository.getOrderById(orderId).getOrderItemList().get(0);
+        OrderItem orderedItem = orderItemRepository.findOrderItemByOrderId(1);
 
         //THEN
-        Assertions.assertThat(orderedItem.deliveryDate()).isEqualTo(LocalDate.now().plusDays(8));
+        Assertions.assertThat(orderedItem.getDeliveryDate()).isEqualTo(LocalDate.now().plusDays(8));
     }
 
     @Test
@@ -200,7 +205,7 @@ public class AcceptanceTest {
                 "firstname",
                 "lastName",
                 "first.last@example.com",
-                new Address("street", "number", "city", 1000),
+                new Address("street", "number", 1000),
                 "phone number");
 
         return RestAssured

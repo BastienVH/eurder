@@ -2,6 +2,7 @@ package com.bastienvh.eurder.service;
 
 import com.bastienvh.eurder.domain.Price;
 import com.bastienvh.eurder.domain.item.*;
+import com.bastienvh.eurder.exceptions.InvalidItemException;
 import com.bastienvh.eurder.repository.ItemRepository;
 import org.springframework.stereotype.Service;
 
@@ -19,27 +20,33 @@ public class ItemService {
 
     public int addItem(CreateItemDTO createItemDTO) {
         Item item = mapper.createItemDTOtoItem(createItemDTO);
-        repository.addItem(item);
+        repository.save(item);
         return item.getId();
     }
 
     public Collection<ItemDTO> getAllItems() {
-        return repository.getAllItems()
+        return repository.findAll()
                 .stream()
                 .map(mapper::itemToDTO)
                 .toList();
     }
 
+    public Item findById(int id) {
+        return repository.findById(id).orElseThrow(() -> new InvalidItemException("No item found with id: " + id));
+    }
+
     public int getAmountInStockByItemId(int id) {
-        return repository.getAmountInStockById(id);
+        return findById(id).getAmountOfStock();
     }
 
     public Price getCurrentPriceByItemId(int id) {
-        Price currentPrice = repository.getPriceById(id);
-        return new Price(currentPrice.value(), currentPrice.currency());
+        Price currentPrice = findById(id).getPrice();
+        return new Price(currentPrice.getPrice(), currentPrice.getCurrency());
     }
 
     public void removeAmountOfStockById(int itemId, int amount) {
-        repository.removeAmountOfStockById(itemId, amount);
+        Item foundItem = findById(itemId);
+        foundItem.setAmountOfStock(foundItem.getAmountOfStock() - amount);
+        repository.save(foundItem);
     }
 }

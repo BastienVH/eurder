@@ -3,6 +3,7 @@ package com.bastienvh.eurder.service;
 import com.bastienvh.eurder.domain.*;
 import com.bastienvh.eurder.domain.item.Currency;
 import com.bastienvh.eurder.domain.order.*;
+import com.bastienvh.eurder.exceptions.InvalidOrderException;
 import com.bastienvh.eurder.repository.OrderRepository;
 import org.springframework.stereotype.Service;
 
@@ -28,19 +29,24 @@ public class OrderService {
 
         //storing the order in the repo
         UUID customerId = createOrderDTO.customerId();
+        Order order = new Order(customerId, new Price(BigDecimal.ZERO, Currency.EURO));
         List<OrderItem> orderItemList = new ArrayList<>();
 
         for (ItemGroup itemGroup : createOrderDTO.itemGroups()) {
             LocalDate deliveryDate = calculateDeliveryDate(itemGroup);
-            OrderItem orderItem = new OrderItem(itemGroup.itemId(), itemGroup.amountToBuy(), itemService.getCurrentPriceByItemId(itemGroup.itemId()), deliveryDate);
+            OrderItem orderItem = new OrderItem(itemService.findById(itemGroup.itemId()), findById(order.getId()), itemGroup.amountToBuy(), itemService.getCurrentPriceByItemId(itemGroup.itemId()), deliveryDate);
             orderItemList.add(orderItem);
             removeOrderedItemsFromStock(itemGroup.itemId(), itemGroup.amountToBuy());
         }
         Price totalPrice = calculateTotalPrice(orderItemList);
-        Order order = new Order(customerId, orderItemList, totalPrice);
-        repository.addOrder(order);
+
+        repository.save(order);
 
         return new OrderConfirmation(order.getId(), totalPrice);
+    }
+
+    public Order findById(int id) {
+        return repository.findById(id).orElseThrow(() -> new InvalidOrderException("No order found with id: " + id));
     }
 
     private void removeOrderedItemsFromStock(int itemId, int amount) {

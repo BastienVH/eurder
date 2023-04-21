@@ -27,7 +27,7 @@ class CustomerControllerTest {
             "firstname",
             "lastName",
             "first.last@example.com",
-            new Address("street", "number", "city", 1000),
+            new Address("street", "number",  1000),
             "phone number");
 
     @Test

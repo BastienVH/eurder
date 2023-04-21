@@ -1,14 +1,24 @@
 package com.bastienvh.eurder.domain.customer;
 
+import jakarta.persistence.*;
+
 import java.util.UUID;
 
+@Entity
 public class Customer {
-    private final UUID id;
-    private final String firstName;
-    private final String lastName;
-    private final String email;
-    private final Address address;
-    private final String phoneNumber;
+    @Id
+    private UUID id;
+    @Column
+    private String firstName;
+    @Column
+    private String lastName;
+    @Column
+    private String email;
+    @OneToOne(cascade = {CascadeType.ALL})
+    @JoinColumn(name = "address_id")
+    private Address address;
+    @Column
+    private String phoneNumber;
 
     public Customer(String firstName, String lastName, String email, Address address, String phoneNumber) {
         this.id = UUID.randomUUID();
@@ -17,6 +27,10 @@ public class Customer {
         this.email = email;
         this.address = address;
         this.phoneNumber = phoneNumber;
+    }
+
+    protected Customer() {
+
     }
 
     public UUID getId() {

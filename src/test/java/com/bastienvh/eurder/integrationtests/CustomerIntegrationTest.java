@@ -8,6 +8,8 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
@@ -18,6 +20,8 @@ import static io.restassured.RestAssured.*;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
+@EnableAutoConfiguration
+@AutoConfigureTestDatabase
 public class CustomerIntegrationTest {
     @LocalServerPort
     int port;
@@ -37,11 +41,12 @@ public class CustomerIntegrationTest {
     @Test
     void getOneCustomer_withCorrectUUID_thenReturnsCorrectCustomerDTO() {
         //GIVEN
+        Address address = new Address("street", "number",  1000);
         CreateCustomerDTO createCustomerDTO = new CreateCustomerDTO(
                 "firstname",
                 "lastName",
                 "first.last@example.com",
-                new Address("street", "number", "city", 1000),
+                address,
                 "phone number");
 
         CustomerDTO DTOfromCreation = given()
@@ -72,7 +77,7 @@ public class CustomerIntegrationTest {
                 null,
                 "lastName",
                 "first.last@example.com",
-                new Address("street", "number", "city", 1000),
+                new Address("street", "number",  1000),
                 "phone number");
 
         //WHEN
@@ -100,7 +105,7 @@ public class CustomerIntegrationTest {
                 "firstName",
                 "lastName",
                 "first.last@example.com",
-                new Address(null, "number", "city", 1000),
+                new Address(null, "number",  1000),
                 "phone number");
 
         //WHEN
@@ -128,7 +133,7 @@ public class CustomerIntegrationTest {
                 "firstName",
                 "lastName",
                 "first.last@example.com",
-                new Address("Kantersteen", "number", "city", 0),
+                new Address("Kantersteen", "number",  0),
                 "phone number");
 
         //WHEN
@@ -156,7 +161,7 @@ public class CustomerIntegrationTest {
                 "firstName",
                 "lastName",
                 "first.last@example.com",
-                new Address("Kantersteen", "number", "city", 10200),
+                new Address("Kantersteen", "number",  10200),
                 "phone number");
 
         //WHEN

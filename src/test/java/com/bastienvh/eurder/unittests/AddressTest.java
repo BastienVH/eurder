@@ -7,6 +7,6 @@ import org.junit.jupiter.api.Test;
 class AddressTest {
     @Test
     void addAddress_withValidInputs_thenNoExceptionIsThrown() {
-        new Address("Kantersteen", "2A", "Brussel", 1000);
+        new Address("Kantersteen", "2A",  1000);
     }
 }

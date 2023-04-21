@@ -9,6 +9,8 @@ import io.restassured.http.ContentType;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
@@ -18,6 +20,8 @@ import java.math.BigDecimal;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
+@EnableAutoConfiguration
+@AutoConfigureTestDatabase
 public class ItemIntegrationTest {
     @LocalServerPort
     int port;
@@ -44,7 +48,7 @@ public class ItemIntegrationTest {
                 .extract()
                 .as(Integer.class);
         //THEN
-        Assertions.assertThat(itemRepository.getAllItems().size()).isEqualTo(1);
+        Assertions.assertThat(itemRepository.findAll().size()).isEqualTo(1);
     }
 
     @Test
