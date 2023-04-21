@@ -1,4 +1,6 @@
 package com.bastienvh.eurder.domain.order;
 
-public record ItemGroup(int itemId, int amountToBuy) {
+import jakarta.validation.constraints.Min;
+
+public record ItemGroup(int itemId, @Min(value = 1, message = "Order amount must be at least 1 per item.") int amountToBuy) {
 }

@@ -27,9 +27,13 @@ public class OrderService {
         //TODO verify customer is valid
         //TODO verify item in itemgroup is in our item repo
 
+        // TODO: fix code so order gets updated with correct values instead of zero
+        // TODO: change return object to include total price and delivery date
+
         //storing the order in the repo
         UUID customerId = createOrderDTO.customerId();
         Order order = new Order(customerId, new Price(BigDecimal.ZERO, Currency.EURO));
+        repository.save(order);
         List<OrderItem> orderItemList = new ArrayList<>();
 
         for (ItemGroup itemGroup : createOrderDTO.itemGroups()) {
@@ -40,7 +44,6 @@ public class OrderService {
         }
         Price totalPrice = calculateTotalPrice(orderItemList);
 
-        repository.save(order);
 
         return new OrderConfirmation(order.getId(), totalPrice);
     }

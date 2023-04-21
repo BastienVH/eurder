@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import java.util.UUID;
 
 @Entity
+@Table(name = "orders")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "order_id_seq")
@@ -14,7 +15,7 @@ public class Order {
     @Column
     private UUID customerId;
     @Embedded
-    @AttributeOverride(name = "value", column = @Column(name = "total_price"))
+    @AttributeOverride(name = "price", column = @Column(name = "total_price"))
     private Price totalPrice;
 
     public Order(UUID customerId, Price totalPrice) {

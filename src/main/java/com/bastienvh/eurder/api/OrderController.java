@@ -3,6 +3,7 @@ package com.bastienvh.eurder.api;
 import com.bastienvh.eurder.domain.order.CreateOrderDTO;
 import com.bastienvh.eurder.domain.order.OrderConfirmation;
 import com.bastienvh.eurder.service.OrderService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,7 +19,7 @@ public class OrderController {
 
     @PostMapping(consumes = "application/json", produces = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
-    public OrderConfirmation placeOrder(@RequestBody CreateOrderDTO createOrderDTO) {
+    public OrderConfirmation placeOrder(@Valid @RequestBody CreateOrderDTO createOrderDTO) {
         return service.placeOrder(createOrderDTO);
     }
 }
